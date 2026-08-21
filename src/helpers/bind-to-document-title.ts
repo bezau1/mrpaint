@@ -3,5 +3,5 @@ document
   ?.addEventListener(
     'titlechange' as never,
     (evt: CustomEvent<{ title: string }>) =>
-      (document.title = `${evt.detail.title} - Paint`),
+      (document.title = `${evt.detail.title} - MrPaint`),
   );

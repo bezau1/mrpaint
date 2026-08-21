@@ -1,4 +1,4 @@
-import { clearCanvas } from '../../helpers/clear-canvas';
+import { resizeLayers } from '../../helpers/resize-layers';
 import { showDialog } from '../../helpers/dialog';
 import { showMessageBox } from '../../helpers/message-box';
 import type { DrawingContext } from '../../models/drawing-context';
@@ -6,12 +6,11 @@ import type { MenuAction } from '../../models/menu-action';
 
 export class AttributesAction implements MenuAction {
   async execute(drawingContext: DrawingContext): Promise<void> {
-    const { previewCanvas, context } = drawingContext;
-    if (!previewCanvas || !context) {
+    const { previewCanvas, canvas } = drawingContext;
+    if (!previewCanvas || !canvas) {
       return;
     }
 
-    const { canvas } = context;
     const result = await showDialog('paint-dialog-attributes', {
       width: canvas.width.toString(),
       height: canvas.height.toString(),
@@ -29,18 +28,12 @@ export class AttributesAction implements MenuAction {
       await showMessageBox(
         'Bitmaps must be greater than one pixel on a side.',
         'warning',
-        'Paint',
+        'MrPaint',
       );
       return;
     }
 
-    const imageData = context.getImageData(0, 0, canvas.width, canvas.height);
-
-    canvas.width = previewCanvas.width = newWidth;
-    canvas.height = previewCanvas.height = newHeight;
-
-    clearCanvas(drawingContext, false);
-    context.putImageData(imageData, 0, 0);
+    resizeLayers(drawingContext, newWidth, newHeight);
 
     drawingContext.history?.commit();
   }

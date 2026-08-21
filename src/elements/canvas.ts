@@ -2,7 +2,10 @@ import { css, CSSResultGroup, html, LitElement, TemplateResult } from 'lit';
 import { customElement, property } from 'lit/decorators.js';
 import { DRAWING_CONTEXT } from '../data/drawing-context';
 import { clearCanvas } from '../helpers/clear-canvas';
+import { compositeLayers } from '../helpers/composite-layers';
 import { evaluateTextToolbarVisibility } from '../helpers/evaluate-text-toolbar-visibility';
+import { resetLayers } from '../helpers/reset-layers';
+import { syncActiveLayer } from '../helpers/sync-active-layer';
 import { updateContext } from '../helpers/update-context';
 import type { DrawingContext } from '../models/drawing-context';
 import type { Point } from '../models/point';
@@ -16,9 +19,10 @@ export class Canvas extends LitElement {
   @property({ attribute: false }) inCanvas = false;
   @property({ attribute: false }) tool?: Tool;
 
-  // Canvas defaults to screen dimensions
-  @property({ attribute: false }) canvasWidth = screen.width;
-  @property({ attribute: false }) canvasHeight = screen.height;
+  // Canvas defaults to screen dimensions, falling back to the viewport if
+  // the environment doesn't report a screen size (e.g. some headless browsers)
+  @property({ attribute: false }) canvasWidth = screen.width || innerWidth;
+  @property({ attribute: false }) canvasHeight = screen.height || innerHeight;
 
   private pointerDown = false;
   private previewColor: 'primary' | 'secondary' = 'primary';
@@ -177,10 +181,17 @@ export class Canvas extends LitElement {
 
     context.imageSmoothingEnabled = false;
     this.drawingContext.canvas = canvas;
-    this.drawingContext.context = context;
+    this.drawingContext.displayContext = context;
     this.drawingContext.previewCanvas = previewCanvas;
     this.drawingContext.previewContext = previewContext;
     this.drawingContext.element = this;
+
+    if (!this.drawingContext.layers.length) {
+      resetLayers(this.drawingContext, this.canvasWidth, this.canvasHeight);
+    } else {
+      syncActiveLayer(this.drawingContext);
+    }
+
     clearCanvas(this.drawingContext);
     this.drawingContext.document.dirty = false;
     updateContext(this);
@@ -224,6 +235,11 @@ export class Canvas extends LitElement {
     return [x, y, this.drawingContext, color];
   }
 
+  get activeLayerLocked(): boolean {
+    const { layers, activeLayerIndex } = this.drawingContext;
+    return !!layers[activeLayerIndex]?.locked;
+  }
+
   onPointerDown(event: PointerEvent): void {
     this.pointerDown = true;
     this.previewColor = event.button !== 2 ? 'primary' : 'secondary';
@@ -232,9 +248,10 @@ export class Canvas extends LitElement {
     evaluateTextToolbarVisibility(this.drawingContext);
     updateContext(this);
 
-    if (this.tool?.onPointerDown) {
+    if (this.tool?.onPointerDown && !this.activeLayerLocked) {
       const { x, y } = this.getCoordinates(event);
       this.tool.onPointerDown(...this.getToolEventArgs(x, y));
+      compositeLayers(this.drawingContext);
     }
 
     event.preventDefault();
@@ -259,8 +276,9 @@ export class Canvas extends LitElement {
       this.tool.onPointerHover(...this.getToolEventArgs(x, y));
     }
 
-    if (this.pointerDown && this.tool?.onPointerMove) {
+    if (this.pointerDown && this.tool?.onPointerMove && !this.activeLayerLocked) {
       this.tool.onPointerMove(...this.getToolEventArgs(x, y));
+      compositeLayers(this.drawingContext);
     }
   }
 

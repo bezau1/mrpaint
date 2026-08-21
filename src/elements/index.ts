@@ -15,6 +15,7 @@ import './color-switcher';
 import './grid';
 import './handle';
 import './inset-container';
+import './layers-panel';
 import './menu';
 import './menu-bar';
 import './ruler';

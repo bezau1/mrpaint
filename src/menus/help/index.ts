@@ -15,7 +15,7 @@ export const helpMenu: MenuEntry = {
       separator: true,
     },
     {
-      caption: 'About Paint',
+      caption: 'About MrPaint',
       mnemonic: 'A',
       helpText: 'Displays program information, version number, and copyright.',
       instance: new AboutAction(),

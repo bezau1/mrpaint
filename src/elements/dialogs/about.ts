@@ -62,16 +62,23 @@ export class About extends LitElement {
 
   render(): TemplateResult {
     return html`
-      <paint-window caption="About Paint" close>
+      <paint-window caption="About MrPaint" close>
         <div class="content">
           <img src="assets/icon.png" width="32" height="32" alt="" />
           <div class="info">
-            Paint<br />
+            MrPaint<br />
+            Original project:
             <a
               href="https://github.com/christianliebel/paint"
               target="_blank"
               rel="noopener noreferrer"
               >https://github.com/christianliebel/paint</a
+            >, reworked by
+            <a
+              href="https://nubertislife.com"
+              target="_blank"
+              rel="noopener noreferrer"
+              >bezau1</a
             ><br />
             <a
               href="3rdpartylicenses.txt"
@@ -89,7 +96,7 @@ export class About extends LitElement {
             <paint-ruler></paint-ruler>
             <br />
             <div class="storage">
-              <span>Storage Available to Paint:</span>
+              <span>Storage Available to MrPaint:</span>
               <span>${this.getFreeMemoryInKB()} KB</span>
               <span>System Resources:</span>
               <span>${this.getFreeMemoryPercentage()}% Free</span>

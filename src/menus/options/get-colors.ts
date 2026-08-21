@@ -29,9 +29,9 @@ export class GetColorsAction implements MenuAction {
       updateContext(drawingContext.element);
     } catch {
       await showMessageBox(
-        `${file.name}\nPaint cannot open this file.\nThis file is not in the correct format.`,
+        `${file.name}\nMrPaint cannot open this file.\nThis file is not in the correct format.`,
         'warning',
-        'Paint',
+        'MrPaint',
       );
     }
   }

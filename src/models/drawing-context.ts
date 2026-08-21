@@ -1,6 +1,7 @@
 import type { History } from '../helpers/history';
 import type { Brush } from './brush';
 import type { FillStyle } from './fill-style';
+import type { Layer } from './layer';
 import type { Selection } from './selection';
 import type { TextContext } from './text-context';
 import type { ToolDefinition } from './tool-definition';
@@ -122,6 +123,17 @@ export interface DrawingContext {
   };
 
   /**
+   * Contains the stack of layers that make up the document, ordered bottom
+   * to top. Painting tools always draw onto the active layer.
+   */
+  layers: Layer[];
+
+  /**
+   * Contains the index of the currently active layer within {@see layers}.
+   */
+  activeLayerIndex: number;
+
+  /**
    * Contains the document context.
    */
   document: {
@@ -169,12 +181,21 @@ export interface DrawingContext {
   previewContext: CanvasRenderingContext2D | null;
 
   /**
-   * Contains a reference to the main canvas.
+   * Contains a reference to the main (display/composite) canvas.
    */
   canvas: HTMLCanvasElement | null;
 
   /**
-   * Contains a reference to the main 2D context.
+   * Contains a reference to the main canvas's 2D context, used only for
+   * compositing layers onto the display. Tools never draw onto this
+   * directly — use {@see context} instead.
+   */
+  displayContext: CanvasRenderingContext2D | null;
+
+  /**
+   * Contains a reference to the active layer's 2D context. This is what
+   * every drawing tool reads and writes; kept in sync with
+   * {@see activeLayerIndex} via syncActiveLayer().
    */
   context: CanvasRenderingContext2D | null;
 }

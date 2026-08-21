@@ -2,6 +2,7 @@ import { css, CSSResultGroup, html, LitElement, TemplateResult } from 'lit';
 import { customElement, property } from 'lit/decorators.js';
 import { DRAWING_CONTEXT } from '../data/drawing-context';
 import { renderMnemonic } from '../helpers/render-mnemonic';
+import { layerMenu } from '../menus/layer';
 import type { MenuEntry } from '../models/menu';
 
 @customElement('paint-menu-bar')
@@ -45,11 +46,13 @@ export class MenuBar extends LitElement {
         text-shadow: none;
       }
 
-      paint-menu {
+      paint-menu,
+      paint-layers-panel {
         display: none;
       }
 
-      li.active paint-menu {
+      li.active paint-menu,
+      li.active paint-layers-panel {
         display: block;
       }
 
@@ -80,11 +83,15 @@ export class MenuBar extends LitElement {
               class="${this.activeMenu === entry ? 'active' : ''}"
             >
               ${renderMnemonic(entry.caption, entry.mnemonic)}
-              <paint-menu
-                .entries="${entry.entries}"
-                .drawingContext="${this.drawingContext}"
-              >
-              </paint-menu>
+              ${entry === layerMenu
+                ? html`<paint-layers-panel
+                    .drawingContext="${this.drawingContext}"
+                  ></paint-layers-panel>`
+                : html`<paint-menu
+                    .entries="${entry.entries}"
+                    .drawingContext="${this.drawingContext}"
+                  >
+                  </paint-menu>`}
             </li>
           `,
         )}

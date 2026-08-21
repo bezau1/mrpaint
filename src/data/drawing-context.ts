@@ -31,6 +31,8 @@ export const DRAWING_CONTEXT: DrawingContext = {
     toolBox: true,
     textToolbar: false,
   },
+  layers: [],
+  activeLayerIndex: -1,
   document: {
     title: 'untitled',
     dirty: false,
@@ -48,6 +50,7 @@ export const DRAWING_CONTEXT: DrawingContext = {
   previewCanvas: null,
   previewContext: null,
   canvas: null,
+  displayContext: null,
   context: null,
   history: null,
 };

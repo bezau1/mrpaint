@@ -1,16 +1,16 @@
 {
-    "name": "Paint",
+    "name": "MrPaint",
     "display": "standalone",
     "theme_color": "#000080",
     "background_color": "#808080",
-    "start_url": "/",
-    "scope": "/",
+    "start_url": ".",
+    "scope": ".",
     "icons": [{
         "src": "assets/icon.png",
         "sizes": "196x196"
     }],
     "file_handlers": [{
-        "action": "/",
+        "action": ".",
         "accept": {
             "image/png": [".png"]
         },

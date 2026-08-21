@@ -12,7 +12,7 @@ export async function handleUnsavedChanges(
   const result = await showMessageBox(
     `Save changes to ${drawingContext.document.title}?`,
     'warning',
-    'Paint',
+    'MrPaint',
     'yes-no-cancel',
   );
 

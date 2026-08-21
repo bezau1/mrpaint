@@ -1,8 +1,10 @@
 import { ExitAction } from './exit';
 import { NewAction } from './new';
 import { OpenAction } from './open';
+import { OpenProjectAction } from './open-project';
 import { SaveAction } from './save';
 import { SaveAsAction } from './save-as';
+import { SaveProjectAction } from './save-project';
 import { PrintAction } from './print';
 import { SendAction } from './send';
 import type { MenuEntry } from '../../models/menu';
@@ -38,6 +40,23 @@ export const fileMenu: MenuEntry = {
       mnemonic: 'A',
       helpText: 'Saves the active document with a new name.',
       instance: new SaveAsAction(),
+    },
+    {
+      separator: true,
+    },
+    {
+      caption: 'Open Project…',
+      mnemonic: 'r',
+      helpText:
+        'Opens a layered .paintproj project, restoring all layers.',
+      instance: new OpenProjectAction(),
+    },
+    {
+      caption: 'Save Project…',
+      mnemonic: 'j',
+      helpText:
+        'Saves the document as a layered .paintproj project, preserving all layers.',
+      instance: new SaveProjectAction(),
     },
     {
       separator: true,

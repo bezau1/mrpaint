@@ -183,7 +183,7 @@ export class Attributes extends LitElement {
       await showMessageBox(
         'Please enter no more than 5 characters.',
         'warning',
-        'Paint',
+        'MrPaint',
       );
       // TODO: Focus box that was responsible for this warning.
       return;

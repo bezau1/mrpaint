@@ -1,21 +1,20 @@
 import { fileSave } from 'browser-fs-access';
-import { flattenLayers } from '../../helpers/flatten-layers';
-import { toBlob } from '../../helpers/to-blob';
+import { serializeProject } from '../../helpers/serialize-project';
 import { updateDocumentContext } from '../../helpers/update-document-context';
 import type { DrawingContext } from '../../models/drawing-context';
 import type { MenuAction } from '../../models/menu-action';
 
-export class SaveAsAction implements MenuAction {
+export class SaveProjectAction implements MenuAction {
   async execute(drawingContext: DrawingContext): Promise<void> {
     if (!drawingContext.canvas) {
       return;
     }
 
-    const blob = await toBlob(flattenLayers(drawingContext));
+    const blob = serializeProject(drawingContext);
     const file = await fileSave(blob, {
       fileName: drawingContext.document.title,
-      extensions: ['.png'],
-      description: 'PNG files',
+      extensions: ['.paintproj'],
+      description: 'Paint Project files',
     });
 
     if (file) {
